@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+          rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+          crossorigin="anonymous"
+    />
+    <title>Text Summarization and NER</title>
+    <Style>
+        * {
+    margin: 0;
+    padding: 0px;
+    box-sizing: border-box;
+    }
+    body {
+        background-color: #ffffff;
+    }
+    * {
+        font-family: Verdana, "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+
+    }
+    h1 {
+        font-weight: 1000;
+    }
+    .container {
+      max-width: 1050px;
+      width: 90%;
+      margin: auto;
+    }
+
+    .navbar {
+      width: 100%;
+      box-shadow: 8px 3px 4px rgb(146 161 176 );
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items:center;
+      height: 62px;
+    }
+    .navbar .menu-items {
+      display: flex;
+    }
+    .navbar .nav-container li {
+      list-style: none;
+    }
+    .navbar .nav-container a {
+      text-decoration: none;
+      color: #0e2431;
+      font-weight: 500;
+      font-size: 1.2rem;
+      padding: 0.7rem;
+    }
+    .navbar .nav-container a:hover{
+        font-weight: bolder;
+    }
+    .nav-container {
+      display: block;
+      position: relative;
+      height: 60px;
+    }
+    .nav-container .checkbox {
+      position: absolute;
+      display: block;
+      height: 32px;
+      width: 32px;
+      top: 20px;
+      left: 20px;
+      z-index: 5;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .nav-container .hamburger-lines {
+        height: 26px;
+      width: 32px;
+      position: absolute;
+      top: 17px;
+      left: 20px;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .nav-container .hamburger-lines .line {
+      display: block;
+      height: 4px;
+      width: 100%;
+      border-radius: 10px;
+      background: #0e2431;
+    }
+    .nav-container .hamburger-lines .line1 {
+      transform-origin: 0% 0%;
+      transition: transform 0.4s ease-in-out;
+    }
+    .nav-container .hamburger-lines .line2 {
+      transition: transform 0.2s ease-in-out;
+    }
+    .nav-container .hamburger-lines .line3 {
+      transform-origin: 0% 100%;
+      transition: transform 0.4s ease-in-out;
+    }
+    .navbar .menu-items {
+        background-color: #ffffff;
+      padding-top: 120px;
+      box-shadow: inset 0 0 2000px rgba(255, 255, 255, .5);
+      height: 100vh;
+      width: 100%;
+      transform: translate(-150%);
+      display: flex;
+      flex-direction: column;
+      margin-left: -40px;
+      padding-left: 50px;
+      transition: transform 0.5s ease-in-out;
+      text-align: center;
+    }
+    .navbar .menu-items li {
+      margin-bottom: 1.2rem;
+      font-size: 1.5rem;
+      font-weight: 500;
+    }
+    .logo {
+      position: absolute;
+      top: 5px;
+      right: 15px;
+      font-size: 1.2rem;
+      color: #0e2431;
+    }
+    .nav-container input[type="checkbox"]:checked ~ .menu-items {
+      transform: translateX(0);
+    }
+    .nav-container input[type="checkbox"]:checked ~ .hamburger-lines .line1 {
+      transform: rotate(45deg);
+    }
+    .nav-container input[type="checkbox"]:checked ~ .hamburger-lines .line2 {
+      transform: scaleY(0);
+    }
+    .nav-container input[type="checkbox"]:checked ~ .hamburger-lines .line3 {
+      transform: rotate(-45deg);
+    }
+    .nav-container input[type="checkbox"]:checked ~ .logo{
+      display: none;
+    }
+    .form-container {
+        margin-top: 50px;
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
+    }
+    textarea {
+        resize: none;
+        width: 100%;
+        padding: 10px;
+    }
+    .result-container {
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+    }
+    .output-container {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        width: 48%;
+    }
+    .summary-title,
+    .ner-title {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .ner-list {
+        list-style: decimal;
+        padding: 0 20px;
+    }
+    .ner-item {
+        margin-bottom: 8px;
+    }
+    .button{
+        width: 25%;
+        margin-top: 20px;
+        margin-left: 500px;
+        background-color: #343a40;
+        border: 2px solid #422800;
+        border-radius: 30px;
+        box-shadow: #422800 4px 4px 0 0;
+        color: #fff;
+        cursor: pointer;
+        display: inline-block;
+        font-weight: 600;
+        font-size: 18px;
+        padding: 0 18px;
+        line-height: 50px;
+        text-align: center;
+        text-decoration: none;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+    }
+    .textarea {
+        border: none;
+        border-radius: 8px;
+        font-size: 20px;
+        box-shadow: #422800 1px 0 1px 0;
+        overflow: visible;
+    }
+    .button:hover {
+        background-color: #fff;
+        color: #000;
+    }
+
+    .button:active {
+        box-shadow: #422800 2px 2px 0 0;
+        transform: translate(2px, 2px);
+    }
+
+    @media (min-width: 768px) {
+      .button {
+        min-width: 120px;
+        padding: 0 25px;
+      }
+    }
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+    #loading-button {
+        padding: 10px 50px;
+        margin-top:35vh;
+        height: 200px;
+        margin-left: 40vw;
+        width: 20%;
+        background-color: #4d8db7;
+        color: #fff;
+        border: none;
+        border-radius: 130px;
+        cursor: pointer;
+        touch-action: manipulation;
+        transition: background-color 0.3s ease;
+        box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+    }
+    #loading-button:hover {
+        color: #000000;
+        background-color: #eef1f3;
+    }
+    #loading-button {
+        box-shadow: #422800 2px 2px 0 0;
+        transform: translate(5px, 5px);
+    }
+    #text {
+        margin-top: 35%;
+    }
+    </Style>
+</head>
+<body>
+<div id="overlay">
+    <nav>
+      <div class="navbar">
+        <div class="container nav-container">
+            <input class="checkbox" type="checkbox" name="" id="" />
+            <div class="hamburger-lines">
+              <span class="line line1"></span>
+              <span class="line line2"></span>
+              <span class="line line3"></span>
+            </div>
+          <div class="logo">
+            <h1>CRISPER</h1>
+          </div>
+          <div class="menu-items">
+            <li><a href="/">Home</a></li>
+            <li><a href="#">about</a></li>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container w-50 form-container">
+        <div class="row justify-content-md-center">
+            <div class="col">
+                <form action="/text-summarization-and-ner" method="post">
+                    <div class="form-group">
+                        <textarea class="textarea" name="inputtext_" id="inputText" rows="8" placeholder="Enter your text here" required></textarea>
+                    </div>
+                    <button type="submit" class="button" role="button">Process</button>
+                </form>
+            </div>
+        </div>
+
+        {% if data %}
+        <div class="row mt-4 result-container">
+            <div class="col output-container">
+                <h3 class="summary-title">Summary</h3>
+                <p>{{ data["summary"] }}</p>
+            </div>
+            <div class="col output-container">
+                <h3 class="ner-title">NER Spans</h3>
+                <ul class="ner-list">
+                    {% for span in data["ner_spans"] %}
+                    <li class="ner-item">{{ span[0] }} - {{ span[1] }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+
+</html>
+
+

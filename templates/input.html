@@ -8,16 +8,11 @@
           rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
           crossorigin="anonymous"
     />
-    <title>Text Summarization and NER</title>
+    <title>Crisper</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-bez@1.0.11/src/jquery.bez.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
     <Style>
-        * {
-    margin: 0;
-    padding: 0px;
-    box-sizing: border-box;
-    }
-    body {
-        background-color: #ffffff;
-    }
     * {
         font-family: Verdana, "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
         margin: 0;
@@ -25,8 +20,16 @@
         box-sizing: border-box;
 
     }
+    body {
+        overflow: hidden;
+    }
     h1 {
         font-weight: 1000;
+         overflow: hidden;
+    }
+    #overlay {
+        display: none;
+         overflow: hidden;
     }
     .container {
       max-width: 1050px;
@@ -128,6 +131,7 @@
     .logo {
       position: absolute;
       top: 5px;
+        text-transform: capitalize;
       right: 15px;
       font-size: 1.2rem;
       color: #0e2431;
@@ -152,12 +156,13 @@
         background-color: #ffffff;
         padding: 30px;
         border-radius: 12px;
-        box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
+        box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
     }
     textarea {
         resize: none;
         width: 100%;
-        padding: 10px;
+        padding: 20px;
+        height: 40vh;
     }
     .result-container {
         margin-top: 20px;
@@ -207,7 +212,7 @@
     .textarea {
         border: none;
         border-radius: 8px;
-        font-size: 20px;
+        font-size: 18px;
         box-shadow: #422800 1px 0 1px 0;
         overflow: visible;
     }
@@ -227,43 +232,69 @@
         padding: 0 25px;
       }
     }
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
+
+#preloader {
+    display: grid;
+    place-items: center;
+    background: black;
+    height: 100vh;
+}
+h2 {
+    color: whitesmoke;
+    text-align: center
+}
+.wrapper {
+    height: 1rem;
+    width: 16rem;
+    border: 0.1rem solid whitesmoke;
+    display: flex;
+    align-items: center;
+    position: relative;
+    border-radius: 1rem;
+    overflow: hidden;
+}
+.boxes {
+    display: flex;
+    position: absolute;
+    animation: preloader 1s linear infinite;
+}
+.box {
+    margin-left: .1rem;
+    height: 2rem;
+    width: 1rem;
+    background: whitesmoke;
+    border-radius: 2rem;
+}
+#load {
+    padding: 300px;
+}
+@keyframes preloader {
+    0% {
+        left: -50%;
     }
-    #loading-button {
-        padding: 10px 50px;
-        margin-top:35vh;
-        height: 200px;
-        margin-left: 40vw;
-        width: 20%;
-        background-color: #4d8db7;
-        color: #fff;
-        border: none;
-        border-radius: 130px;
-        cursor: pointer;
-        touch-action: manipulation;
-        transition: background-color 0.3s ease;
-        box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+
+    100% {
+        margin-left: .5rem;
+        left: 100%;
     }
-    #loading-button:hover {
-        color: #000000;
-        background-color: #eef1f3;
-    }
-    #loading-button {
-        box-shadow: #422800 2px 2px 0 0;
-        transform: translate(5px, 5px);
-    }
-    #text {
-        margin-top: 35%;
-    }
+}
     </Style>
 </head>
 <body>
+<div id="preloader">
+    <div id="load">
+    <h2>Please wait...</h2>
+    <div class="wrapper">
+        <div class="boxes">
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        </div>
+    </div>
+    </div>
+</div>
 <div id="overlay">
     <nav>
       <div class="navbar">
@@ -316,6 +347,16 @@
     </div>
 </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script>
+        setTimeout(() => {
+    const box = document.getElementById('preloader');
+    const layout = document.getElementById('overlay');
+    box.style.display = 'none';
+    layout.style.display = 'block';
+
+}, 4000);
+
+    </script>
 </body>
 
 </html>

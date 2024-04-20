@@ -7,6 +7,7 @@ from flair.data import Sentence
 from flair.models import SequenceTagger
 
 app = Flask(__name__)
+
 warnings.filterwarnings("ignore")
 model_name = "facebook/bart-large-xsum"  # Summarization Model
 tokenizer = BartTokenizer.from_pretrained(model_name)
